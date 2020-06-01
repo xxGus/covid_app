@@ -1,6 +1,9 @@
+import 'package:covid_app/ui/covid_risk/covid_risk_screen.dart';
+import 'package:covid_app/ui/home/home_screen.dart';
+import 'package:covid_app/ui/wash_hands/wash_hands_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'package:covid_app/utils/styles.dart' as styles;
+import '../utils/constants.dart';
 
 class TabManager extends StatefulWidget {
   static const String routeName = '/tab-manager';
@@ -13,7 +16,11 @@ class _TabManagerState extends State<TabManager> {
   PageController _pageController;
   int _selectedIndex = 0;
   bool editScreen = true;
-  List<Widget> _widgetOptions = [];
+  List<Widget> _widgetOptions = [
+    HomeScreen(),
+    WashHandsScreen(),
+    CovidRiskScreen(),
+  ];
 
   @override
   void initState() {
@@ -80,11 +87,14 @@ class _TabManagerState extends State<TabManager> {
     }
 
     return Scaffold(
+      extendBodyBehindAppBar: true  ,
+      appBar: AppBar(
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
-            styles.accentColor,
-            styles.primaryColor,
+            accentColor,
+            primaryColor,
           ],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
