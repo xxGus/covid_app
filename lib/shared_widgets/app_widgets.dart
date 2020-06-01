@@ -24,8 +24,8 @@ class AppWidget extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 Positioned(
-                  top: styles.spacing(7.5),
-                  left: styles.spacing(2.5),
+                  top: spacing(7.5),
+                  left: spacing(2.5),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -38,22 +38,22 @@ class AppWidget extends StatelessWidget {
                           children: <TextSpan>[
                             TextSpan(
                               text: 'COV',
-                              style: TextStyle(color: styles.accentColor),
+                              style: TextStyle(color: accentColor),
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: styles.spacing(3)),
+                      SizedBox(height: spacing(3)),
                       headingTextMedium(
                           text: tagline,
-                          color: styles.white,
+                          color: white,
                           fontWeight: FontWeight.w700)
                     ],
                   ),
                 ),
                 Positioned(
-                  top: styles.spacing(7.5),
-                  right: styles.spacing(2.5),
+                  top: spacing(7.5),
+                  right: spacing(2.5),
                   child: Icon(
                     Icons.notifications,
                     color: Colors.white,
@@ -62,7 +62,7 @@ class AppWidget extends StatelessWidget {
                 ),
                 Positioned(
                   top: imageTop,
-                  right: styles.spacing(3),
+                  right: spacing(3),
                   child: Image.asset(
                     image,
                     fit: BoxFit.fill,
