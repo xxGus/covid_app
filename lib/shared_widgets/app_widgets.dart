@@ -13,6 +13,8 @@ class AppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
+
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(375),
         child: AppBar(
@@ -32,12 +34,12 @@ class AppWidget extends StatelessWidget {
                     children: <Widget>[
                       RichText(
                         text: TextSpan(
-                          text: 'ITA',
+                          text: 'COVID',
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24),
                           children: <TextSpan>[
                             TextSpan(
-                              text: 'COV',
+                              text: 'APP',
                               style: TextStyle(color: accentColor),
                             ),
                           ],
@@ -49,15 +51,6 @@ class AppWidget extends StatelessWidget {
                           color: white,
                           fontWeight: FontWeight.w700)
                     ],
-                  ),
-                ),
-                Positioned(
-                  top: spacing(7.5),
-                  right: spacing(2.5),
-                  child: Icon(
-                    Icons.notifications,
-                    color: Colors.white,
-                    size: 24,
                   ),
                 ),
                 Positioned(

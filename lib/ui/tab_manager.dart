@@ -87,14 +87,12 @@ class _TabManagerState extends State<TabManager> {
     }
 
     return Scaffold(
-      extendBodyBehindAppBar: true  ,
-      appBar: AppBar(
-      ),
+      extendBodyBehindAppBar: true,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
-            accentColor,
             primaryColor,
+            accentColor,
           ],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,

@@ -1,1 +1,0 @@
-// caso precise salvar informações no app, utilizar o localdata e o  package shared_preferences
