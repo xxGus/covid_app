@@ -14,7 +14,6 @@ class AppWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(375),
         child: AppBar(
@@ -55,10 +54,11 @@ class AppWidget extends StatelessWidget {
                 ),
                 Positioned(
                   top: imageTop,
-                  right: spacing(3),
+                  right: spacing(2),
                   child: Image.asset(
                     image,
                     fit: BoxFit.fill,
+                    width: 200,
                   ),
                 ),
               ],
