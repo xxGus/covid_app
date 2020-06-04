@@ -10,7 +10,7 @@ class CovidRiskScreen extends StatefulWidget {
 class _CovidRiskScreenState extends State<CovidRiskScreen> {
   @override
   Widget build(BuildContext context) {
-   return SizedBox.expand(
+    return SizedBox.expand(
       child: Stack(
         children: <Widget>[
           AppWidget(
@@ -20,9 +20,7 @@ class _CovidRiskScreenState extends State<CovidRiskScreen> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-                      child: SingleChildScrollView(
-              child: Quiz(),
-            ),
+            child: Quiz(),
           )
         ],
       ),
