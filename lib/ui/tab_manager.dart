@@ -1,6 +1,6 @@
 import 'package:covid_app/ui/covid_risk/covid_risk_screen.dart';
 import 'package:covid_app/ui/home/home_screen.dart';
-import 'package:covid_app/ui/wash_hands/wash_hands_screen.dart';
+import 'package:covid_app/ui/tips/tips.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/constants.dart';
@@ -18,7 +18,7 @@ class _TabManagerState extends State<TabManager> {
   bool editScreen = true;
   List<Widget> _widgetOptions = [
     HomeScreen(),
-    WashHandsScreen(),
+    TipsScreen(),
     CovidRiskScreen(),
   ];
 
@@ -89,16 +89,7 @@ class _TabManagerState extends State<TabManager> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            primaryColor,
-            accentColor,
-          ],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          tileMode: TileMode.clamp
-          ),
-        ),
+        decoration: backgroundDefault(),
         child: PageView(
           physics: NeverScrollableScrollPhysics(),
           controller: _pageController,
@@ -115,7 +106,7 @@ class _TabManagerState extends State<TabManager> {
             direction: Axis.horizontal,
             children: <Widget>[
               _buttonTabBar(icon: Icons.home, text: 'Home', index: 0),
-              _buttonTabBar(icon: Icons.invert_colors, text: 'Lavar', index: 1),
+              _buttonTabBar(icon: Icons.invert_colors, text: 'Dicas', index: 1),
               _buttonTabBar(icon: Icons.event_note, text: 'Risco', index: 2),
             ],
           ),
@@ -123,4 +114,6 @@ class _TabManagerState extends State<TabManager> {
       ),
     );
   }
+
+  
 }

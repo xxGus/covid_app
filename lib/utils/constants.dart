@@ -7,3 +7,16 @@ const Color accentLight = Color.fromRGBO(253, 153, 161, 1);
 const Color white = Color.fromRGBO(255, 255, 255, 1);
 
 double spacing(value) => value * 8.0;
+
+BoxDecoration backgroundDefault() {
+  return BoxDecoration(
+    gradient: LinearGradient(
+        colors: [
+          primaryColor,
+          accentColor,
+        ],
+        begin: Alignment.topRight,
+        end: Alignment.bottomLeft,
+        tileMode: TileMode.clamp),
+  );
+}
