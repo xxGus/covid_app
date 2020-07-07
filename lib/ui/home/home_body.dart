@@ -2,6 +2,9 @@ import 'package:covid_app/data/network/home_service.dart';
 import 'package:covid_app/shared_widgets/loading.dart';
 import 'package:covid_app/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+
+import './card_status.dart';
 
 class HomeBody extends StatefulWidget {
   @override
@@ -11,10 +14,42 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody> {
   double initialPercentage = 0.65;
   TextEditingController regionController = TextEditingController();
+  HomeService homeService = HomeService();
+  Map<String, dynamic> covidData;
+  String pais = "";
+  String estado = "";
+  String cidade = "";
+  bool isLoading = true;
+  bool isLoadingData = true;
+
   @override
   void initState() {
     super.initState();
-    regionController.text = 'Brasil';
+    getData("Brazil");
+    getGeoInfo();
+  }
+
+  void getGeoInfo() {
+    homeService.getGeoInfos().then((value) {
+      setState(() {
+        estado = value.administrativeArea;
+        cidade = value.subAdministrativeArea;
+        pais = value.country;
+        regionController.text = value.country;
+        isLoading = false;
+      });
+    });
+  }
+
+  void getData(String filter) {
+    homeService.getConfirmed(filter).then((value) {
+      setState(() {
+        covidData = value;
+        isLoadingData = false;
+      });
+    }).catchError((onError) {
+      print("error getData: $onError");
+    });
   }
 
   @override
@@ -30,13 +65,34 @@ class _HomeBodyState extends State<HomeBody> {
             ),
             color: Color(0xFFFEFEFE)),
         padding: EdgeInsets.only(top: 26, left: 22, right: 22, bottom: 25),
-        child: Column(
-          children: <Widget>[
-            _buildRegionInput(),
-            SizedBox(height: spacing(2)),
-            CardStatus(),
-          ],
-        ),
+        child: isLoading
+            ? Loading()
+            : Column(
+                children: <Widget>[
+                  _buildRegionInput(),
+                  SizedBox(height: spacing(2)),
+                  CardStatus(
+                    filter: regionController.text,
+                    covidData: covidData,
+                    isLoading: isLoadingData,
+                  ),
+                  SizedBox(height: spacing(2)),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    elevation: 5,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14.0),
+                      child: Image.asset(
+                        'assets/images/novo-mapa.jpg',
+                        alignment: Alignment.center,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  )
+                ],
+              ),
       ),
     );
   }
@@ -44,173 +100,85 @@ class _HomeBodyState extends State<HomeBody> {
   Widget _buildRegionInput() {
     return Container(
       height: 50.0,
-      child: TextField(
-        enabled: false,
-        controller: regionController,
-        decoration: InputDecoration(
-            prefixIcon: Icon(Icons.location_on),
-            hintText: 'Cari Daerah Terdampak',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(25.0),
-              borderSide: BorderSide(color: Color(0xffE1E1E1), width: 0.8),
-            ),
-            isDense: true,
-            contentPadding: EdgeInsets.symmetric(vertical: 2)),
-        style: TextStyle(fontSize: 16.0),
-      ),
-    );
-  }
-}
-
-class CardStatus extends StatefulWidget {
-  CardStatus({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  _CardStatusState createState() => _CardStatusState();
-}
-
-class _CardStatusState extends State<CardStatus> {
-  HomeService homeService = HomeService();
-  Map<String, dynamic> covidData = {};
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  void getData() {
-    homeService.getConfirmed().then((value) {
-      print(value);
-      setState(() {
-        covidData = value;
-        isLoading = false;
-      });
-    }).catchError((onError) {
-      print("error getData: $onError");
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double paddingAll = isLoading ? 52.0 : 16;
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
-      elevation: 8,
-      child: Padding(
-        padding: EdgeInsets.all(paddingAll),
-        child: isLoading ? Loading() : buildRowUpdateCases(
-          confirmed: covidData['confirmados']['total'].toString(),
-          recovered: covidData['confirmados']['recuperados'].toString(),
-          deaths: covidData['obitos']['total'].toString(),
+      child: InkWell(
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (ctx) {
+                return Align(
+                  alignment: Alignment.center,
+                  child: AlertDialog(
+                    content: StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                      return Container(
+                        width: 200,
+                        height: 170,
+                        child: ListView(
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          children: <Widget>[
+                            RadioListTile(
+                              groupValue: regionController.text,
+                              value: pais,
+                              title: Text('Pais'),
+                              onChanged: (v) {
+                                setState(() {
+                                  regionController.text = v;
+                                  isLoadingData = true;
+                                });
+                                getData(v);
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            RadioListTile(
+                              groupValue: regionController.text,
+                              value: estado,
+                              title: Text('Estado'),
+                              onChanged: (v) {
+                                setState(() {
+                                  regionController.text = v;
+                                  isLoadingData = true;
+                                });
+                                getData(v);
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            RadioListTile(
+                              groupValue: regionController.text,
+                              value: cidade,
+                              title: Text('Município'),
+                              onChanged: (v) {
+                                setState(() {
+                                  regionController.text = v;
+                                  isLoadingData = true;
+                                });
+                                getData(v);
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                );
+              });
+        },
+        child: TextField(
+          enabled: false,
+          controller: regionController,
+          decoration: InputDecoration(
+              prefixIcon: Icon(Icons.location_on),
+              hintText: 'Filtrar',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(25.0),
+                borderSide: BorderSide(color: Color(0xffE1E1E1), width: 0.8),
+              ),
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(vertical: 2)),
+          style: TextStyle(fontSize: 16.0),
         ),
       ),
     );
   }
-}
-
-Container buildIconHeader({icon, color}) {
-  return Container(
-    width: 24,
-    height: 24,
-    decoration: BoxDecoration(
-      color: Color.alphaBlend(Colors.white70, color),
-      borderRadius: BorderRadius.circular(26.0),
-    ),
-    child: Center(
-      child: Icon(
-        icon,
-        size: 24.0,
-        color: color,
-      ),
-    ),
-  );
-}
-
-Row buildRowUpdateCases({String confirmed, String recovered, String deaths}) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: <Widget>[
-      Column(
-        children: <Widget>[
-          buildIconHeader(icon: Icons.add, color: Colors.orange),
-          buildNumberCount(value: confirmed, color: Colors.orange),
-          Text('Total'),
-        ],
-      ),
-      Column(
-        children: <Widget>[
-          buildIconHeader(icon: Icons.healing, color: Colors.green),
-          buildNumberCount(value: recovered, color: Colors.green),
-          Text('Recuperados'),
-        ],
-      ),
-      Column(
-        children: <Widget>[
-          buildIconHeader(icon: Icons.close, color: Colors.red),
-          buildNumberCount(value: deaths, color: Colors.red),
-          Text('Óbitos'),
-        ],
-      ),
-    ],
-  );
-}
-
-Text buildNumberCount({String value, Color color}) {
-  return Text(
-    value,
-    style: TextStyle(
-      fontSize: 18,
-      fontWeight: FontWeight.bold,
-      color: color,
-    ),
-  );
-}
-
-Widget buildHeader({String title, String desc = '', Function onPressedAction}) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: <Widget>[
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.w600,
-              fontFamily: "Poppins",
-              fontSize: 16,
-            ),
-          ),
-          SizedBox(height: spacing(0.5)),
-          Text(
-            desc,
-            style: TextStyle(
-              color: Colors.grey,
-              fontFamily: "Poppins",
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-      onPressedAction == null
-          ? Container()
-          : OutlineButton(
-              onPressed: onPressedAction,
-              child: Text("Lihat Detail"),
-              color: primaryColor,
-              textColor: Colors.purple,
-              highlightedBorderColor: primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-              ),
-            ),
-    ],
-  );
 }

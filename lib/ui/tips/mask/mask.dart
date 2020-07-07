@@ -20,7 +20,11 @@ class _MaskScreenState extends State<MaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: Container(
         alignment: Alignment.center,
         decoration: backgroundDefault(),
