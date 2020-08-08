@@ -17,10 +17,12 @@ class ModalDefault extends StatelessWidget {
       alignment: Alignment.center,
       child: SizedBox(
         width: 200,
-        height: 200,
+        height: 180,
         child: Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
                 width: double.infinity,

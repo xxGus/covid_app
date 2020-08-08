@@ -2,7 +2,7 @@ import 'package:covid_app/data/network/home_service.dart';
 import 'package:covid_app/shared_widgets/loading.dart';
 import 'package:covid_app/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:convert/convert.dart' as convert;
+import 'dart:convert' as convert;
 import 'package:geolocator/geolocator.dart';
 
 class CardStatus extends StatelessWidget {
@@ -33,31 +33,32 @@ class CardStatus extends StatelessWidget {
                 confirmed: covidData['confirmed'],
                 recovered: covidData['recovered'],
                 deaths: covidData['deaths'],
-              ),
+                fase: covidData['fase'] != null ? covidData['fase'] : -1),
       ),
     );
   }
 }
 
-Container buildIconHeader({icon, color}) {
+Container buildIconHeader({icon, color, size = 24.0}) {
   return Container(
-    width: 24,
+    width: 48,
     height: 24,
-    decoration: BoxDecoration(
-      color: Color.alphaBlend(Colors.white70, color),
-      borderRadius: BorderRadius.circular(26.0),
-    ),
+    // decoration: BoxDecoration(
+    //   color: Color.alphaBlend(Colors.white70, color),
+    //   borderRadius: BorderRadius.circular(26.0),
+    // ),
     child: Center(
       child: Icon(
         icon,
-        size: 24.0,
+        size: size,
         color: color,
       ),
     ),
   );
 }
 
-Row buildRowUpdateCases({String confirmed, String recovered, String deaths}) {
+Row buildRowUpdateCases(
+    {String confirmed, String recovered, String deaths, int fase}) {
   return Row(
     mainAxisAlignment: recovered == ''
         ? MainAxisAlignment.spaceAround
@@ -70,15 +71,29 @@ Row buildRowUpdateCases({String confirmed, String recovered, String deaths}) {
           Text('Total'),
         ],
       ),
-      recovered == ''
-          ? Center()
-          : Column(
+      recovered != ''
+          ? Column(
               children: <Widget>[
                 buildIconHeader(icon: Icons.healing, color: Colors.green),
                 buildNumberCount(value: recovered, color: Colors.green),
                 Text('Recuperados'),
               ],
-            ),
+            )
+          : fase != -1
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    buildIconHeader(
+                        icon: Icons.brightness_1, color: fases[fase - 1], size: 45.0),
+                    // buildNumberCount(value: recovered, color: Colors.green),
+                    Padding(
+                      padding: EdgeInsets.only(top: 30.0),
+                      child: Text('Fase $fase'),
+                    ),
+                  ],
+                )
+              : Center(),
       Column(
         children: <Widget>[
           buildIconHeader(icon: Icons.close, color: Colors.red),

@@ -20,3 +20,11 @@ BoxDecoration backgroundDefault() {
         tileMode: TileMode.clamp),
   );
 }
+
+const List<Color> fases = [
+  Color.fromRGBO(255, 43, 61, 1),
+  Color.fromRGBO(255, 140, 0, 1),
+  Color.fromRGBO(255, 255, 0, 1),
+  Color.fromRGBO(112, 173, 71, 1),
+  Color.fromRGBO(0, 176, 240, 1)
+];

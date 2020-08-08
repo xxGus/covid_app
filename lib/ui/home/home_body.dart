@@ -2,6 +2,7 @@ import 'package:covid_app/data/network/home_service.dart';
 import 'package:covid_app/shared_widgets/loading.dart';
 import 'package:covid_app/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:geolocator/geolocator.dart';
 
 import './card_status.dart';
@@ -16,17 +17,45 @@ class _HomeBodyState extends State<HomeBody> {
   TextEditingController regionController = TextEditingController();
   HomeService homeService = HomeService();
   Map<String, dynamic> covidData;
+  Map<String, dynamic> city;
   String pais = "";
   String estado = "";
   String cidade = "";
   bool isLoading = true;
   bool isLoadingData = true;
+  bool isSelected = false;
+  PhotoViewController controller;
+  PhotoViewController controllerFlex;
+
+  double scaleCopy;
+  double scaleCopyFlex;
 
   @override
   void initState() {
     super.initState();
     getData("Brazil");
     getGeoInfo();
+    controller = PhotoViewController()..outputStateStream.listen(listener);
+    controllerFlex = PhotoViewController()
+      ..outputStateStream.listen(listenerFlex);
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void listener(PhotoViewControllerValue value) {
+    setState(() {
+      scaleCopy = value.scale;
+    });
+  }
+
+  void listenerFlex(PhotoViewControllerValue value) {
+    setState(() {
+      scaleCopyFlex = value.scale;
+    });
   }
 
   void getGeoInfo() {
@@ -41,15 +70,24 @@ class _HomeBodyState extends State<HomeBody> {
     });
   }
 
-  void getData(String filter) {
-    homeService.getConfirmed(filter).then((value) {
-      setState(() {
-        covidData = value;
-        isLoadingData = false;
+  void getData(String filter, {bool city = false}) {
+    if (!city) {
+      homeService.getConfirmed(filter).then((value) {
+        setState(() {
+          covidData = value;
+          isLoadingData = false;
+        });
+      }).catchError((onError) {
+        print("error getData: $onError");
       });
-    }).catchError((onError) {
-      print("error getData: $onError");
-    });
+    } else {
+      homeService.getCity(filter).then((c) {
+        setState(() {
+          covidData = c;
+          isLoadingData = false;
+        });
+      });
+    }
   }
 
   @override
@@ -77,20 +115,51 @@ class _HomeBodyState extends State<HomeBody> {
                     isLoading: isLoadingData,
                   ),
                   SizedBox(height: spacing(2)),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    elevation: 5,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(14.0),
-                      child: Image.asset(
-                        'assets/images/novo-mapa.jpg',
-                        alignment: Alignment.center,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  )
+                  isSelected
+                      ? Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          elevation: 5,
+                          child: Container(
+                            width: double.infinity,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(18),
+                              child: PhotoView(
+                                imageProvider: NetworkImage(
+                                    "https://www.saopaulo.sp.gov.br/wp-content/uploads/2020/08/mapa-plano-sp-07082020.png"),
+                                controller: controller,
+                              ),
+                            ),
+                          ))
+                      : Center(),
+                  isSelected
+                      ? Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          elevation: 5,
+                          child: Container(
+                            width: double.infinity,
+                            height: 200,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14.0),
+                              child: PhotoView(
+                                imageProvider:
+                                    NetworkImage("https://www.saopaulo.sp.gov.br/wp-content/uploads/2020/08/atividades-permitidas-2-3-v-agosto.jpg"),
+                                controller: controllerFlex,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Center(),
                 ],
               ),
       ),
@@ -125,6 +194,7 @@ class _HomeBodyState extends State<HomeBody> {
                                 setState(() {
                                   regionController.text = v;
                                   isLoadingData = true;
+                                  isSelected = false;
                                 });
                                 getData(v);
                                 Navigator.of(context).pop();
@@ -138,6 +208,7 @@ class _HomeBodyState extends State<HomeBody> {
                                 setState(() {
                                   regionController.text = v;
                                   isLoadingData = true;
+                                  isSelected = true;
                                 });
                                 getData(v);
                                 Navigator.of(context).pop();
@@ -151,8 +222,9 @@ class _HomeBodyState extends State<HomeBody> {
                                 setState(() {
                                   regionController.text = v;
                                   isLoadingData = true;
+                                  isSelected = true;
                                 });
-                                getData(v);
+                                getData(v, city: true);
                                 Navigator.of(context).pop();
                               },
                             )

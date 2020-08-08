@@ -28,9 +28,7 @@ class _QuizState extends State<Quiz> {
   @override
   Widget build(BuildContext context) {
     return CovidAppContainer(
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: ListView(
+      child: ListView(
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: ClampingScrollPhysics(),
@@ -156,7 +154,7 @@ class _QuizState extends State<Quiz> {
               },
             ),
             FlatButton(
-              padding: EdgeInsets.symmetric(),
+              padding: EdgeInsets.zero,
               onPressed: () {
                 total = febre +
                     dorDeCabeca +
@@ -192,7 +190,6 @@ class _QuizState extends State<Quiz> {
             ),
           ],
         ),
-      ),
     );
   }
 }
