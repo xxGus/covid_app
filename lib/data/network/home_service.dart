@@ -9,7 +9,7 @@ class HomeService {
     String url = ApiRoutes.baseUrl;
     if (filter == "Brazil") {
       url += ApiRoutes.geral;
-    } else if (filter == "São Paulo") {
+    } else if (filter == "São Paulo" || filter == "Minas Gerais") {
       url += ApiRoutes.estado;
     } else {
       url += ApiRoutes.municipio;
@@ -28,6 +28,12 @@ class HomeService {
           'confirmed': jsonResponse[0]['casosAcumulado'].toString(),
           'recovered': '',
           'deaths': jsonResponse[0]['obitosAcumulado'].toString()
+        };
+      } else if (filter == "Minas Gerais"){
+        return {
+          'confirmed': jsonResponse[4]['casosAcumulado'].toString(),
+          'recovered': '',
+          'deaths': jsonResponse[4]['obitosAcumulado'].toString()
         };
       }
     }
@@ -90,6 +96,7 @@ class HomeService {
       var jsonResponse = convert.jsonDecode(response.body);
       return int.parse(jsonResponse[0]['fase']);
     }
+    
     return Future.error((error) {
       print("getConfirmed() error: $error");
     });

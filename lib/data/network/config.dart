@@ -7,7 +7,7 @@ class ApiRoutes {
   static const String geral = "/PortalGeralApi";
   static const String estado = "/PortalEstado";
   static const String municipio = "/PortalMunicipio";
-  static const String localBaseUrl = "http://10.0.2.2:3000";
+  static const String localBaseUrl = "https://cov19-api.herokuapp.com";
   static const String regioes = "/regioes";
   static const String municipios = "/municipios";
 }

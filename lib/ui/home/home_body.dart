@@ -76,6 +76,7 @@ class _HomeBodyState extends State<HomeBody> {
         setState(() {
           covidData = value;
           isLoadingData = false;
+          isLoading = false;
         });
       }).catchError((onError) {
         print("error getData: $onError");
@@ -85,6 +86,7 @@ class _HomeBodyState extends State<HomeBody> {
         setState(() {
           covidData = c;
           isLoadingData = false;
+          isLoading = false;
         });
       });
     }
@@ -115,7 +117,7 @@ class _HomeBodyState extends State<HomeBody> {
                     isLoading: isLoadingData,
                   ),
                   SizedBox(height: spacing(2)),
-                  isSelected
+                  estado == 'São Paulo' && isSelected
                       ? Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
@@ -137,7 +139,7 @@ class _HomeBodyState extends State<HomeBody> {
                             ),
                           ))
                       : Center(),
-                  isSelected
+                  estado == 'São Paulo' && isSelected
                       ? Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18),
@@ -152,8 +154,8 @@ class _HomeBodyState extends State<HomeBody> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(14.0),
                               child: PhotoView(
-                                imageProvider:
-                                    NetworkImage("https://www.saopaulo.sp.gov.br/wp-content/uploads/2020/08/atividades-permitidas-2-3-v-agosto.jpg"),
+                                imageProvider: NetworkImage(
+                                    "https://www.saopaulo.sp.gov.br/wp-content/uploads/2020/08/atividades-permitidas-2-3-v-agosto.jpg"),
                                 controller: controllerFlex,
                               ),
                             ),
@@ -195,6 +197,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   regionController.text = v;
                                   isLoadingData = true;
                                   isSelected = false;
+                                  isLoading = true;
                                 });
                                 getData(v);
                                 Navigator.of(context).pop();
@@ -209,6 +212,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   regionController.text = v;
                                   isLoadingData = true;
                                   isSelected = true;
+                                  isLoading = true;
                                 });
                                 getData(v);
                                 Navigator.of(context).pop();
@@ -223,6 +227,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   regionController.text = v;
                                   isLoadingData = true;
                                   isSelected = true;
+                                  isLoading = true;
                                 });
                                 getData(v, city: true);
                                 Navigator.of(context).pop();
